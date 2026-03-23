@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_app"
+    android:orientation="vertical"
+    android:padding="@dimen/fragment_padding_medium">
+
+    <TextView
+        android:id="@+id/instance_mods_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/_16ssp"
+        android:textStyle="bold"
+        tools:text="Mods for Default" />
+
+    <TextView
+        android:id="@+id/instance_mods_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_small"
+        android:ellipsize="middle"
+        android:maxLines="2"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/_11ssp"
+        tools:text="/storage/emulated/0/.../instances/default/mods" />
+
+    <com.kdt.mcgui.MineButton
+        android:id="@+id/instance_mods_tools_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_large"
+        android:text="@string/instance_options" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_small"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.kdt.mcgui.MineButton
+                android:id="@+id/instance_mods_show_mods_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/instance_mods_mods" />
+
+            <com.kdt.mcgui.MineButton
+                android:id="@+id/instance_mods_show_resourcepacks_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_small"
+                android:text="@string/instance_mods_packs_short" />
+
+            <com.kdt.mcgui.MineButton
+                android:id="@+id/instance_mods_show_shaderpacks_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_small"
+                android:text="@string/instance_mods_shaders_short" />
+
+            <com.kdt.mcgui.MineButton
+                android:id="@+id/instance_mods_show_worlds_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_small"
+                android:text="@string/instance_mods_worlds" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_small"
+        android:orientation="horizontal">
+
+        <com.kdt.mcgui.MineButton
+            android:id="@+id/instance_mods_import_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/instance_mods_import" />
+
+        <com.kdt.mcgui.MineButton
+            android:id="@+id/instance_mods_browse_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_small"
+            android:layout_weight="1"
+            android:text="@string/instance_mods_browse_mods" />
+
+        <com.kdt.mcgui.MineButton
+            android:id="@+id/instance_mods_open_folder_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_small"
+            android:layout_weight="1"
+            android:text="@string/instance_mods_folder" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_small"
+        android:orientation="horizontal">
+
+        <com.kdt.mcgui.MineButton
+            android:id="@+id/instance_mods_check_updates_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/instance_updates_check" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/instance_mods_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_large"
+        android:gravity="center"
+        android:text="@string/instance_mods_empty"
+        android:textColor="@color/secondary_text"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/instance_mods_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/padding_medium"
+        android:layout_weight="1"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="@dimen/padding_small" />
+</LinearLayout>

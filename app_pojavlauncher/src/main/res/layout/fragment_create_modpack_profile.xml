@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/create_modpack_profile_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_app"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/fragment_padding_medium"
+    android:paddingTop="@dimen/padding_extra_large">
+
+    <TextView
+        android:id="@+id/create_modpack_profile_title"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_profile_modpack_title"
+        android:textSize="@dimen/_18ssp" />
+
+    <TextView
+        android:id="@+id/create_modpack_profile_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_medium"
+        android:gravity="center"
+        android:text="@string/create_profile_modpack_subtitle"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="@dimen/_11ssp" />
+
+    <LinearLayout
+        android:id="@+id/create_modpack_profile_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_extra_large"
+        android:background="@drawable/background_card"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_large">
+
+        <com.kdt.mcgui.MineButton
+            android:id="@+id/button_browse_modpacks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/modpack_browse_button"
+            android:textSize="@dimen/_13ssp" />
+
+        <com.kdt.mcgui.MineButton
+            android:id="@+id/button_import_modpack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_heavy"
+            android:text="@string/modpack_import_button"
+            android:textSize="@dimen/_13ssp" />
+    </LinearLayout>
+</LinearLayout>

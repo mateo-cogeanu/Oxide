@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="64dp"
+    android:viewportWidth="100"
+    android:viewportHeight="32">
+    <path
+        android:fillColor="@color/minebutton_color_play"
+        android:pathData="M4,0 H96 V4 H100 V28 H96 V32 H4 V28 H0 V4 H4 Z"
+        android:strokeWidth="1"
+        android:strokeColor="@color/minebutton_copper_edge" />
+</vector>
