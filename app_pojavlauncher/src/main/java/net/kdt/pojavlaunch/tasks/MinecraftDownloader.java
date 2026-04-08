@@ -66,7 +66,7 @@ public class MinecraftDownloader {
 
     /**
      * Start the game version download process on the global executor service.
-     * @param activity Activity, used for automatic installation of JRE 17 if needed
+     * @param activity Activity, used for automatic installation of a compatible bundled runtime if needed
      * @param version The JMinecraftVersionList.Version from the version list, if available
      * @param realVersion The version ID (necessary)
      * @param listener The download status listener
@@ -143,7 +143,7 @@ public class MinecraftDownloader {
 
         if(!downloadAndProcessMetadata(activity, verInfo, versionName)) {
             Throwable runtimeError = NewJREUtil.getLastError();
-            String message = activity.getString(R.string.exception_failed_to_unpack_jre17);
+            String message = activity.getString(R.string.exception_failed_to_install_runtime);
             String diagnostic = NewJREUtil.getLastDiagnostic();
             if (diagnostic != null) {
                 message += " [" + diagnostic + "]";

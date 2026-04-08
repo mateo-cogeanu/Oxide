@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -106,8 +107,22 @@ public class NewJREUtil {
         return MathUtils.findNearestPositive(targetVersion, runtimes, (runtime)->runtime.javaVersion);
     }
 
-    private static MathUtils.RankedValue<InternalRuntime> getNearestInternalRuntime(int targetVersion) {
-        List<InternalRuntime> runtimeList = Arrays.asList(InternalRuntime.values());
+    private static boolean hasBundledRuntimeForCurrentArch(AssetManager assetManager, InternalRuntime internalRuntime) {
+        try (InputStream ignored = assetManager.open(internalRuntime.path + "/bin-" + archAsString(Tools.DEVICE_ARCHITECTURE) + ".tar.xz")) {
+            return true;
+        } catch (IOException ignored) {
+            return false;
+        }
+    }
+
+    private static boolean isUsableInternalRuntime(AssetManager assetManager, InternalRuntime internalRuntime) {
+        if (internalRuntime.getDownloadUrl() != null) return true;
+        return hasBundledRuntimeForCurrentArch(assetManager, internalRuntime);
+    }
+
+    private static MathUtils.RankedValue<InternalRuntime> getNearestInternalRuntime(AssetManager assetManager, int targetVersion) {
+        List<InternalRuntime> runtimeList = new ArrayList<>(Arrays.asList(InternalRuntime.values()));
+        runtimeList.removeIf((runtime) -> !isUsableInternalRuntime(assetManager, runtime));
         return MathUtils.findNearestPositive(targetVersion, runtimeList, (runtime)->runtime.majorVersion);
     }
 
@@ -140,7 +155,7 @@ public class NewJREUtil {
         // If the runtime version selected by the user is not appropriate for this version (which means the game won't run at all)
         // automatically pick from either an already installed runtime, or a runtime packed with the launcher
         MathUtils.RankedValue<?> nearestInstalledRuntime = getNearestInstalledRuntime(gameRequiredVersion);
-        MathUtils.RankedValue<?> nearestInternalRuntime = getNearestInternalRuntime(gameRequiredVersion);
+        MathUtils.RankedValue<?> nearestInternalRuntime = getNearestInternalRuntime(assetManager, gameRequiredVersion);
 
         MathUtils.RankedValue<?> selectedRankedRuntime = MathUtils.objectMin(
                 nearestInternalRuntime, nearestInstalledRuntime, (value)->value.rank

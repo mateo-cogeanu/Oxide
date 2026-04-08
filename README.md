@@ -92,6 +92,7 @@ Oxide includes support for bundled Java runtimes used by modern Minecraft versio
 - Java 8
 - Java 17
 - Java 21
+- Java 25
 
 ### Account Flexibility
 
@@ -107,7 +108,7 @@ Oxide supports Microsoft accounts for owned copies of Minecraft Java Edition whi
 | Shaderpacks | Per-instance browsing, import, folder access |
 | Worlds | World management directly from the instance tools |
 | UI | Cleaner navigation, smoother transitions, stronger visual hierarchy |
-| Runtime Support | Java 8, 17, and 21 support for a wide range of game versions |
+| Runtime Support | Java 8, 17, 21, and 25 support for a wide range of game versions |
 
 ## Project Identity
 
@@ -153,6 +154,34 @@ From the repository root:
 JAVA_HOME=$(/usr/libexec/java_home -v 21) ./gradlew :app_pojavlauncher:assembleDebug
 ```
 
+### Bundled Runtime Assets
+
+This source tree now includes bundled Android Java runtime asset packs for modern versions:
+
+- `app_pojavlauncher/src/main/assets/components/jre-new` for Java 17
+- `app_pojavlauncher/src/main/assets/components/jre-21` for Java 21
+- `app_pojavlauncher/src/main/assets/components/jre-25` for Java 25
+
+Java 25 currently ships bundled binpacks for:
+
+- `arm`
+- `arm64`
+- `x86_64`
+
+If you want to refresh or replace a bundled runtime pack later, copy the prepared assets in with:
+
+```bash
+./scripts/install_bundled_runtime.sh 25 /path/to/runtime-pack
+```
+
+The source directory must contain:
+
+- `version`
+- `universal.tar.xz`
+- one or more `bin-*.tar.xz` files
+
+Use Android-compatible `pojav` runtime packs for these assets. Desktop Linux or macOS JDK/JRE archives are not suitable replacements.
+
 ### Output
 
 The debug APK will be written to:
@@ -187,4 +216,3 @@ This repository also includes or depends on a range of open-source components us
 Oxide currently ships with the same license text included in the source tree inherited from the Amethyst-based project tree: GNU LGPL v3.
 
 See [LICENSE](./LICENSE).
-

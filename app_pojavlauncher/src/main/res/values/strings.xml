@@ -237,7 +237,7 @@
     <string name="profiles_latest_release">Latest release</string>
     <string name="create_profile_title">Create Instance</string>
     <string name="create_profile_subtitle">Pick the kind of Minecraft setup you want to make.</string>
-    <string name="create_profile_vanilla_hint">Vanilla or lightly tweaked setups with their own folder.</string>
+    <string name="create_profile_vanilla_hint">Pure vanilla setups with their own folder.</string>
     <string name="create_profile_modded_hint">Loaders and modpacks, each isolated like a proper instance.</string>
     <string name="create_profile_customize_title">Profile Setup</string>
     <string name="create_profile_customize_subtitle">Name it, choose a version, and tune the extras only if you need them.</string>
@@ -332,7 +332,7 @@
     <string name="modloader_dl_install_quilt">Create Quilt profile</string>
     <string name="modloader_dl_install_forge">Create Forge profile</string>
     <string name="create_profile_vanilla">Create vanilla profile</string>
-    <string name="create_profile_vanilla_like_versions">Vanilla-like versions</string>
+    <string name="create_profile_vanilla_like_versions">Vanilla</string>
     <string name="create_profile_modded_versions">Modded versions</string>
     <string name="fabric_dl_loader_title">Select versions</string>
     <string name="of_dl_select_version">Select OptiFine version</string>
@@ -464,6 +464,7 @@
     <string name="preference_vsync_in_zink_title">Allow V-Sync with Zink</string>
     <string name="preference_vsync_in_zink_description">Allows the launcher to use internal system APIs to enable V-Sync for Zink. Turn this off if your launcher suddenly crashes with Zink after a system update.</string>
     <string name="exception_failed_to_unpack_jre17">Failed to install JRE 17</string>
+    <string name="exception_failed_to_install_runtime">Failed to install a compatible Java runtime</string>
     <string name="newdl_starting">Reading game metadata…</string>
     <string name="newdl_downloading_metadata">Downloading game metadata (%s)</string>
     <string name="newdl_downloading_game_files">Downloading game… (%d/%d, %.2f MB/s)</string>

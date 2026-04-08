@@ -70,14 +70,6 @@
                 android:layout_marginTop="@dimen/padding_large"
                 android:text="@string/create_profile_vanilla"
                 android:textSize="@dimen/_13ssp" />
-
-            <com.kdt.mcgui.MineButton
-                android:id="@+id/optifine_profile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_heavy"
-                android:text="@string/create_profile_optifine"
-                android:textSize="@dimen/_13ssp" />
         </LinearLayout>
 
         <LinearLayout
