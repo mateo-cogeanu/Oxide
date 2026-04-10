@@ -3,6 +3,14 @@
     <!-- App name part -->
     <string name="brand_name">Oxide</string>
     <string name="app_name">Amethyst</string>
+    <string name="landscape_launcher_title">Minecraft: Java Edition</string>
+    <string name="landscape_summary_profile_label">Profile</string>
+    <string name="landscape_summary_version_label">Version</string>
+    <string name="landscape_summary_folder_label">Folder</string>
+    <string name="landscape_summary_profile_empty">No profile</string>
+    <string name="landscape_summary_version_empty">Not set</string>
+    <string name="landscape_launcher_settings">Settings</string>
+    <string name="landscape_launcher_more">More</string>
 
     <!-- Action bar part -->
 

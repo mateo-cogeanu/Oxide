@@ -13,13 +13,16 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
@@ -53,6 +56,9 @@ import java.util.Objects;
 import fr.spse.extended_view.ExtendedTextView;
 
 public class mcAccountSpinner extends AppCompatSpinner implements AdapterView.OnItemSelectedListener {
+    private boolean mCompactMode = false;
+    private ImageView mCompactAvatarView;
+
     public mcAccountSpinner(@NonNull Context context) {
         this(context, null);
     }
@@ -104,6 +110,7 @@ public class mcAccountSpinner extends AppCompatSpinner implements AdapterView.On
         invalidate();
         mAccountList.add(account.username);
         reloadAccounts(false, mAccountList.size() -1);
+        updateCompactAvatar();
     };
 
     private final ErrorListener mErrorListener = errorMessage -> {
@@ -163,6 +170,26 @@ public class mcAccountSpinner extends AppCompatSpinner implements AdapterView.On
         ExtraCore.addExtraListener(ExtraConstants.MICROSOFT_LOGIN_TODO, mMicrosoftLoginListener);
     }
 
+    public void setCompactMode(boolean compactMode) {
+        mCompactMode = compactMode;
+        if (compactMode) {
+            setBackgroundColor(Color.TRANSPARENT);
+        } else {
+            setBackgroundColor(getResources().getColor(R.color.background_status_bar));
+        }
+        if (getAdapter() != null) {
+            ((ArrayAdapter<?>) getAdapter()).notifyDataSetChanged();
+        }
+        requestLayout();
+        invalidate();
+        updateCompactAvatar();
+    }
+
+    public void setCompactAvatarView(@Nullable ImageView compactAvatarView) {
+        mCompactAvatarView = compactAvatarView;
+        updateCompactAvatar();
+    }
+
 
     @Override
     public final void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -184,6 +211,7 @@ public class mcAccountSpinner extends AppCompatSpinner implements AdapterView.On
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (mCompactMode) return;
         if(mLoginBarWidth == -1) mLoginBarWidth = getWidth(); // Initial draw
 
         float bottom = getHeight() - mLoginBarPaint.getStrokeWidth()/2;
@@ -332,6 +360,7 @@ public class mcAccountSpinner extends AppCompatSpinner implements AdapterView.On
 
         mSelectecAccount = selectedAccount;
         setImageFromSelectedAccount();
+        updateCompactAvatar();
     }
 
     @Deprecated()
@@ -405,6 +434,37 @@ public class mcAccountSpinner extends AppCompatSpinner implements AdapterView.On
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             View view = getDropDownView(position, convertView, parent);
             view.findViewById(R.id.delete_account_button).setVisibility(View.GONE);
+            ExtendedTextView textview = view.findViewById(R.id.account_item);
+            LinearLayout.LayoutParams textLayoutParams = (LinearLayout.LayoutParams) textview.getLayoutParams();
+            if (mCompactMode) {
+                textview.setText(" ");
+                textview.setGravity(Gravity.CENTER);
+                textview.setPadding(0, 0, 0, 0);
+                textview.setCompoundDrawablePadding(0);
+                textLayoutParams.width = LayoutParams.MATCH_PARENT;
+                textLayoutParams.height = LayoutParams.MATCH_PARENT;
+                textLayoutParams.weight = 0f;
+                textview.setLayoutParams(textLayoutParams);
+                View deleteButton = view.findViewById(R.id.delete_account_button);
+                deleteButton.getLayoutParams().width = 0;
+                deleteButton.setLayoutParams(deleteButton.getLayoutParams());
+                LayoutParams layoutParams = view.getLayoutParams();
+                if (layoutParams != null) {
+                    layoutParams.width = getResources().getDimensionPixelOffset(R.dimen.launcher_landscape_account_height);
+                    view.setLayoutParams(layoutParams);
+                }
+            } else {
+                textview.setText(super.getItem(position));
+                textview.setGravity(Gravity.CENTER_VERTICAL);
+                int startPadding = parent.getResources().getDimensionPixelOffset(R.dimen._8sdp);
+                textview.setPaddingRelative(startPadding, 0, 0, 0);
+                textview.setCompoundDrawablePadding(parent.getResources().getDimensionPixelOffset(R.dimen._6sdp));
+                textLayoutParams.width = 0;
+                textLayoutParams.height = LayoutParams.MATCH_PARENT;
+                textLayoutParams.weight = 1f;
+                textview.setLayoutParams(textLayoutParams);
+            }
+            textview.postProcessDrawables();
             return view;
         }
 
@@ -418,6 +478,27 @@ public class mcAccountSpinner extends AppCompatSpinner implements AdapterView.On
                     })
                     .show();
         }
+    }
+
+    private void updateCompactAvatar() {
+        if (mCompactAvatarView == null) return;
+        if (!mCompactMode) {
+            mCompactAvatarView.setImageDrawable(null);
+            mCompactAvatarView.setVisibility(View.GONE);
+            return;
+        }
+        Drawable avatar = null;
+        if (mSelectecAccount != null) {
+            Bitmap bitmap = mSelectecAccount.getSkinFace();
+            if (bitmap != null) {
+                avatar = new BitmapDrawable(getResources(), bitmap);
+            }
+        }
+        if (avatar == null) {
+            avatar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add, null);
+        }
+        mCompactAvatarView.setImageDrawable(avatar);
+        mCompactAvatarView.setVisibility(View.VISIBLE);
     }
 
 

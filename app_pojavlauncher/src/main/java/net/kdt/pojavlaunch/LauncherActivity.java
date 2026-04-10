@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -90,6 +91,7 @@ public class LauncherActivity extends BaseActivity {
     private mcAccountSpinner mAccountSpinner;
     private FragmentContainerView mFragmentView;
     private ImageButton mSettingsButton;
+    private ImageView mAccountAvatar;
     private ProgressLayout mProgressLayout;
     private ProgressServiceKeeper mProgressServiceKeeper;
     private ModloaderInstallTracker mInstallTracker;
@@ -99,8 +101,13 @@ public class LauncherActivity extends BaseActivity {
     private final FragmentManager.FragmentLifecycleCallbacks mFragmentCallbackListener = new FragmentManager.FragmentLifecycleCallbacks() {
         @Override
         public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
-            mSettingsButton.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), f instanceof MainMenuFragment
-                    ? R.drawable.ic_menu_settings : R.drawable.ic_menu_home));
+            if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
+                mSettingsButton.setVisibility(View.VISIBLE);
+                mSettingsButton.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), f instanceof MainMenuFragment
+                        ? R.drawable.ic_menu_settings : R.drawable.ic_menu_home));
+            } else {
+                mSettingsButton.setVisibility(View.GONE);
+            }
         }
     };
 
@@ -123,10 +130,9 @@ public class LauncherActivity extends BaseActivity {
     /* Listener for the settings fragment */
     private final View.OnClickListener mSettingButtonListener = v -> {
         Fragment fragment = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
-        if(fragment instanceof MainMenuFragment){
+        if(getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT && fragment instanceof MainMenuFragment){
             Tools.swapFragment(this, LauncherPreferenceFragment.class, SETTING_FRAGMENT_TAG, null);
         } else{
-            // The setting button doubles as a home button now
             Tools.backToMainMenu(this);
         }
     };
@@ -413,6 +419,9 @@ public class LauncherActivity extends BaseActivity {
         mFragmentView = findViewById(R.id.container_fragment);
         mSettingsButton = findViewById(R.id.setting_button);
         mAccountSpinner = findViewById(R.id.account_spinner);
+        mAccountAvatar = findViewById(R.id.account_avatar);
         mProgressLayout = findViewById(R.id.progress_layout);
+        mAccountSpinner.setCompactMode(getResources().getConfiguration().orientation != ORIENTATION_PORTRAIT);
+        mAccountSpinner.setCompactAvatarView(mAccountAvatar);
     }
 }

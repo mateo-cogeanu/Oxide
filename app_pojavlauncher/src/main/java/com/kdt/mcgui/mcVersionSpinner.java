@@ -1,6 +1,5 @@
 package com.kdt.mcgui;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static net.kdt.pojavlaunch.fragments.ProfileEditorFragment.DELETED_PROFILE;
 
 import android.annotation.SuppressLint;
@@ -33,6 +32,8 @@ import net.kdt.pojavlaunch.profiles.ProfileAdapter;
 import net.kdt.pojavlaunch.profiles.ProfileAdapterExtra;
 
 import fr.spse.extended_view.ExtendedTextView;
+
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 /**
  * A class implementing custom spinner like behavior, notably:
@@ -103,7 +104,9 @@ public class mcVersionSpinner extends ExtendedTextView {
     /** Initialize various behaviors */
     private void init(){
         // Setup various attributes
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen._12ssp));
+        boolean isLandscape = getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
+        setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(isLandscape ? R.dimen._17ssp : R.dimen._15ssp));
         setGravity(Gravity.CENTER_VERTICAL);
         int startPadding = getContext().getResources().getDimensionPixelOffset(R.dimen._17sdp);
         int endPadding = getContext().getResources().getDimensionPixelOffset(R.dimen._5sdp);
@@ -127,6 +130,7 @@ public class mcVersionSpinner extends ExtendedTextView {
             @Override
             public void onClick(View v) {
                 if(mPopupWindow == null) getPopupWindow();
+                mPopupWindow.setWidth(getWidth());
 
                 if(mPopupWindow.isShowing()){
                     mPopupWindow.dismiss();
@@ -173,7 +177,7 @@ public class mcVersionSpinner extends ExtendedTextView {
                     .start();
         });
 
-        mPopupWindow = new PopupWindow(mListView, MATCH_PARENT, getContext().getResources().getDimensionPixelOffset(R.dimen._184sdp));
+        mPopupWindow = new PopupWindow(mListView, getWidth(), getContext().getResources().getDimensionPixelOffset(R.dimen._184sdp));
         mPopupWindow.setElevation(5);
         mPopupWindow.setClippingEnabled(false);
         mPopupWindow.setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.background_card, null));

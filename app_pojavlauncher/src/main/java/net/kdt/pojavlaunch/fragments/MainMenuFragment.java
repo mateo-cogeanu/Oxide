@@ -12,8 +12,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.PopupMenu;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,11 +26,13 @@ import androidx.fragment.app.Fragment;
 import com.kdt.mcgui.mcVersionSpinner;
 
 import net.kdt.pojavlaunch.CustomControlsActivity;
+import net.kdt.pojavlaunch.LauncherActivity;
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
+import net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment;
 import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper;
 import net.kdt.pojavlaunch.value.launcherprofiles.LauncherProfiles;
 import net.kdt.pojavlaunch.value.launcherprofiles.MinecraftProfile;
@@ -43,6 +47,9 @@ public class MainMenuFragment extends Fragment {
 
     private mcVersionSpinner mVersionSpinner;
     private Button mManageModsButton;
+    private TextView mLandscapeProfileValue;
+    private TextView mLandscapeVersionValue;
+    private TextView mLandscapeFolderValue;
 
     public MainMenuFragment(){
         super(R.layout.fragment_launcher);
@@ -55,38 +62,98 @@ public class MainMenuFragment extends Fragment {
         mManageModsButton = view.findViewById(R.id.manage_mods_button);
         Button mShareLogsButton = view.findViewById(R.id.share_logs_button);
         Button mOpenDirectoryButton = view.findViewById(R.id.open_files_button);
+        Button mSettingsButton = view.findViewById(R.id.launcher_settings_button);
+        Button mMoreButton = view.findViewById(R.id.launcher_more_button);
 
         ImageButton mEditProfileButton = view.findViewById(R.id.edit_profile_button);
         Button mPlayButton = view.findViewById(R.id.play_button);
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
-        mVersionSpinner.setOnProfileSelectedListener(this::updateManageModsVisibility);
+        mLandscapeProfileValue = view.findViewById(R.id.launcher_landscape_profile_value);
+        mLandscapeVersionValue = view.findViewById(R.id.launcher_landscape_version_value);
+        mLandscapeFolderValue = view.findViewById(R.id.launcher_landscape_folder_value);
+        mVersionSpinner.setOnProfileSelectedListener(() -> {
+            updateManageModsVisibility();
+            updateLandscapeSummary();
+        });
 
-        mCustomControlButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomControlsActivity.class)));
+        if (mCustomControlButton != null) {
+            mCustomControlButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomControlsActivity.class)));
+        }
         if (hasOnlineProfile()) {
-            mInstallJarButton.setOnClickListener(v -> runInstallerWithConfirmation(false));
-            mInstallJarButton.setOnLongClickListener(v -> {
-                runInstallerWithConfirmation(true);
-                return true;
-            });
-        } else mInstallJarButton.setOnClickListener(v -> hasNoOnlineProfileDialog(requireActivity()));
+            if (mInstallJarButton != null) {
+                mInstallJarButton.setOnClickListener(v -> runInstallerWithConfirmation(false));
+                mInstallJarButton.setOnLongClickListener(v -> {
+                    runInstallerWithConfirmation(true);
+                    return true;
+                });
+            }
+        } else if (mInstallJarButton != null) {
+            mInstallJarButton.setOnClickListener(v -> hasNoOnlineProfileDialog(requireActivity()));
+        }
         mManageModsButton.setOnClickListener(v -> Tools.swapFragment(requireActivity(), InstanceModsFragment.class, InstanceModsFragment.TAG, null));
         mEditProfileButton.setOnClickListener(v -> mVersionSpinner.openProfileEditor(requireActivity()));
         updateManageModsVisibility();
+        updateLandscapeSummary();
 
         mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
 
-        mShareLogsButton.setOnClickListener((v) -> shareLog(requireContext()));
+        if (mShareLogsButton != null) {
+            mShareLogsButton.setOnClickListener((v) -> shareLog(requireContext()));
+        }
+        if (mSettingsButton != null) {
+            mSettingsButton.setOnClickListener(v ->
+                    Tools.swapFragment(requireActivity(), LauncherPreferenceFragment.class, LauncherActivity.SETTING_FRAGMENT_TAG, null));
+        }
 
-        mOpenDirectoryButton.setOnClickListener((v)-> {
+        if (mOpenDirectoryButton != null) {
+            mOpenDirectoryButton.setOnClickListener((v)-> {
+                openCurrentProfileDirectory(v);
+            });
+        }
+        if (mMoreButton != null) {
+            mMoreButton.setOnClickListener(v -> showLandscapeMoreMenu(v));
+        }
+        animateMenuEntrance(mCustomControlButton, mInstallJarButton, mManageModsButton, mShareLogsButton,
+                mOpenDirectoryButton, mMoreButton, mSettingsButton, mVersionSpinner, mEditProfileButton, mPlayButton);
+    }
+
+    private void openCurrentProfileDirectory(View v) {
             if (Tools.isDemoProfile(v.getContext())){ // Say a different message when on demo profile since they might see the hidden demo folder
                 hasNoOnlineProfileDialog(getActivity(), getString(R.string.demo_unsupported), getString(R.string.change_account));
             } else if (!hasOnlineProfile()) { // Otherwise display the generic pop-up to log in
                 hasNoOnlineProfileDialog(requireActivity());
-        } else openPath(v.getContext(), getCurrentProfileDirectory(), false);
+            } else openPath(v.getContext(), getCurrentProfileDirectory(), false);
+    }
 
+    private void showLandscapeMoreMenu(View anchor) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), anchor);
+        popupMenu.getMenu().add(0, 1, 0, R.string.mcl_option_customcontrol);
+        popupMenu.getMenu().add(0, 2, 1, R.string.main_install_jar_file);
+        popupMenu.getMenu().add(0, 3, 2, R.string.main_share_logs);
+        popupMenu.getMenu().add(0, 4, 3, R.string.mcl_button_open_directory);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case 1:
+                    startActivity(new Intent(requireContext(), CustomControlsActivity.class));
+                    return true;
+                case 2:
+                    if (hasOnlineProfile()) {
+                        runInstallerWithConfirmation(false);
+                    } else {
+                        hasNoOnlineProfileDialog(requireActivity());
+                    }
+                    return true;
+                case 3:
+                    shareLog(requireContext());
+                    return true;
+                case 4:
+                    openCurrentProfileDirectory(anchor);
+                    return true;
+                default:
+                    return false;
+            }
         });
-        animateMenuEntrance(mCustomControlButton, mInstallJarButton, mManageModsButton, mShareLogsButton,
-                mOpenDirectoryButton, mVersionSpinner, mEditProfileButton, mPlayButton);
+        popupMenu.show();
     }
 
     private File getCurrentProfileDirectory() {
@@ -103,6 +170,7 @@ public class MainMenuFragment extends Fragment {
         super.onResume();
         mVersionSpinner.reloadProfiles();
         updateManageModsVisibility();
+        updateLandscapeSummary();
     }
 
     private void runInstallerWithConfirmation(boolean isCustomArgs) {
@@ -181,5 +249,35 @@ public class MainMenuFragment extends Fragment {
                     .setInterpolator(new DecelerateInterpolator())
                     .start();
         }
+    }
+
+    private void updateLandscapeSummary() {
+        if (mLandscapeProfileValue == null || mLandscapeVersionValue == null || mLandscapeFolderValue == null) {
+            return;
+        }
+
+        LauncherProfiles.load();
+        String currentProfileName = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE, null);
+        MinecraftProfile profile = currentProfileName == null ? null : LauncherProfiles.mainProfileJson.profiles.get(currentProfileName);
+
+        if (profile == null) {
+            mLandscapeProfileValue.setText(R.string.landscape_summary_profile_empty);
+            mLandscapeVersionValue.setText(R.string.landscape_summary_version_empty);
+            mLandscapeFolderValue.setText(Tools.DIR_GAME_NEW);
+            return;
+        }
+
+        mLandscapeProfileValue.setText(Tools.isValidString(profile.name) ? profile.name : currentProfileName);
+        mLandscapeVersionValue.setText(Tools.isValidString(profile.lastVersionId) ? profile.lastVersionId : getString(R.string.profiles_latest_release));
+        mLandscapeFolderValue.setText(getLandscapeFolderSummary(profile));
+    }
+
+    private String getLandscapeFolderSummary(@NonNull MinecraftProfile profile) {
+        File gameDir = Tools.getGameDirPath(profile);
+        String path = gameDir.getAbsolutePath();
+        if (path.startsWith(Tools.DIR_GAME_HOME)) {
+            path = "games/Amethyst" + path.substring(Tools.DIR_GAME_HOME.length());
+        }
+        return path;
     }
 }

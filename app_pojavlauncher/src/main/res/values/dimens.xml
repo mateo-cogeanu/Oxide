@@ -31,4 +31,31 @@
     <dimen name="fragment_padding_medium">@dimen/_10sdp</dimen>
     <!-- Misc paddings -->
     <dimen name="profile_editor_image_padding">@dimen/padding_small</dimen>
+
+    <!-- Responsive launcher landscape -->
+    <dimen name="launcher_landscape_top_bar_height">@dimen/_56sdp</dimen>
+    <dimen name="launcher_landscape_top_bar_button_width">@dimen/_52sdp</dimen>
+    <dimen name="launcher_landscape_top_bar_button_height">@dimen/_42sdp</dimen>
+    <dimen name="launcher_landscape_account_width">@dimen/_240sdp</dimen>
+    <dimen name="launcher_landscape_account_height">@dimen/_40sdp</dimen>
+    <dimen name="launcher_landscape_account_dropdown_offset">@dimen/_40sdp</dimen>
+    <dimen name="launcher_landscape_header_horizontal_padding">@dimen/padding_large</dimen>
+    <dimen name="launcher_landscape_header_vertical_padding">@dimen/padding_heavy</dimen>
+    <dimen name="launcher_landscape_brand_text_size">@dimen/_13ssp</dimen>
+    <dimen name="launcher_landscape_nav_text_size">@dimen/_18ssp</dimen>
+    <dimen name="launcher_landscape_stage_padding">@dimen/padding_extra_large</dimen>
+    <dimen name="launcher_landscape_content_max_width">900dp</dimen>
+    <dimen name="launcher_landscape_summary_gap">@dimen/padding_medium</dimen>
+    <dimen name="launcher_landscape_summary_card_height">@dimen/_132sdp</dimen>
+    <dimen name="launcher_landscape_summary_label_text_size">@dimen/_11ssp</dimen>
+    <dimen name="launcher_landscape_summary_profile_text_size">@dimen/_22ssp</dimen>
+    <dimen name="launcher_landscape_summary_version_text_size">@dimen/_19ssp</dimen>
+    <dimen name="launcher_landscape_summary_folder_text_size">@dimen/_15ssp</dimen>
+    <dimen name="launcher_landscape_bottom_bar_horizontal_padding">@dimen/padding_large</dimen>
+    <dimen name="launcher_landscape_bottom_bar_vertical_padding">@dimen/padding_large</dimen>
+    <dimen name="launcher_landscape_version_width">@dimen/_300sdp</dimen>
+    <dimen name="launcher_landscape_version_height">@dimen/_68sdp</dimen>
+    <dimen name="launcher_landscape_edit_button_size">@dimen/_52sdp</dimen>
+    <dimen name="launcher_landscape_play_width">@dimen/_300sdp</dimen>
+    <dimen name="launcher_landscape_play_height">@dimen/_72sdp</dimen>
 </resources>

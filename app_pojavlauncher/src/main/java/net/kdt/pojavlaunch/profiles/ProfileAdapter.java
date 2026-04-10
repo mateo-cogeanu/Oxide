@@ -4,8 +4,10 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import fr.spse.extended_view.ExtendedTextView;
+
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 /*
  * Adapter for listing launcher profiles in a Spinner
@@ -93,6 +97,9 @@ public class ProfileAdapter extends BaseAdapter {
 
     public void setViewProfile(View v, String nm, boolean displaySelection) {
         ExtendedTextView extendedTextView = (ExtendedTextView) v;
+        boolean isLandscape = v.getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
+        extendedTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                v.getResources().getDimensionPixelSize(isLandscape ? R.dimen._16ssp : R.dimen._14ssp));
 
         MinecraftProfile minecraftProfile = mProfiles.get(nm);
         if(minecraftProfile == null) minecraftProfile = dummy;
@@ -109,18 +116,29 @@ public class ProfileAdapter extends BaseAdapter {
         else if (MinecraftProfile.LATEST_SNAPSHOT.equalsIgnoreCase(versionName))
             versionName = v.getContext().getString(R.string.profiles_latest_snapshot);
 
+        String[] versionParts = splitVersionDisplay(versionName);
+
         if (versionName == null && profileName != null) {
             extendedTextView.setText(profileName);
         } else if (versionName != null && profileName == null) {
-            extendedTextView.setText(versionName);
+            if (isLandscape && versionParts[1] != null) {
+                extendedTextView.setText(buildLandscapeVersionText(v, versionParts[0], versionParts[1]));
+            } else {
+                extendedTextView.setText(versionName);
+            }
         } else {
             SpannableStringBuilder builder = new SpannableStringBuilder();
             builder.append(profileName);
             int versionStart = builder.length();
-            builder.append("   ");
+            builder.append(isLandscape ? "\n" : "   ");
             builder.append(versionName);
-            builder.setSpan(new RelativeSizeSpan(0.7f), versionStart, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            builder.setSpan(new ForegroundColorSpan(ColorUtils.setAlphaComponent(Color.WHITE, 110)), versionStart, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (isLandscape) {
+                builder.setSpan(new AbsoluteSizeSpan(v.getResources().getDimensionPixelSize(R.dimen._14ssp)),
+                        versionStart, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                builder.setSpan(new RelativeSizeSpan(0.76f), versionStart, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            builder.setSpan(new ForegroundColorSpan(ColorUtils.setAlphaComponent(Color.WHITE, 105)), versionStart, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             extendedTextView.setText(builder);
         }
 
@@ -129,6 +147,28 @@ public class ProfileAdapter extends BaseAdapter {
             String selectedProfile = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE,"");
             extendedTextView.setBackgroundColor(selectedProfile.equals(nm) ? ColorUtils.setAlphaComponent(Color.WHITE,60) : Color.TRANSPARENT);
         }else extendedTextView.setBackgroundColor(Color.TRANSPARENT);
+    }
+
+    private SpannableStringBuilder buildLandscapeVersionText(View v, String title, String subtitle) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(title);
+        int subtitleStart = builder.length();
+        builder.append("\n");
+        builder.append(subtitle);
+        builder.setSpan(new AbsoluteSizeSpan(v.getResources().getDimensionPixelSize(R.dimen._13ssp)),
+                subtitleStart, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new ForegroundColorSpan(ColorUtils.setAlphaComponent(Color.WHITE, 105)),
+                subtitleStart, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return builder;
+    }
+
+    private String[] splitVersionDisplay(String versionName) {
+        if (!Tools.isValidString(versionName)) return new String[]{versionName, null};
+        int splitIndex = versionName.indexOf(' ');
+        if (splitIndex <= 0 || splitIndex >= versionName.length() - 1) {
+            return new String[]{versionName, null};
+        }
+        return new String[]{versionName.substring(0, splitIndex), versionName.substring(splitIndex + 1)};
     }
 
     public void setViewExtra(View v, ProfileAdapterExtra extra) {

@@ -85,6 +85,21 @@ Oxide includes:
 - cleaner instance creation and management flows
 - an interface tuned for repeated use, not just first launch
 
+### Responsive Landscape and Desktop Mode
+
+Oxide now includes a landscape launcher flow designed to work across:
+
+- phones in landscape
+- tablets
+- Android desktop mode
+
+That includes:
+
+- a dedicated landscape home layout
+- responsive spacing and sizing buckets for larger screens
+- landscape-specific instance creation and profile editing layouts
+- a launcher flow that stays usable without stretching the portrait UI sideways
+
 ### Modern Runtime Support
 
 Oxide includes support for bundled Java runtimes used by modern Minecraft versions, including:
@@ -108,6 +123,7 @@ Oxide supports Microsoft accounts for owned copies of Minecraft Java Edition whi
 | Shaderpacks | Per-instance browsing, import, folder access |
 | Worlds | World management directly from the instance tools |
 | UI | Cleaner navigation, smoother transitions, stronger visual hierarchy |
+| Landscape/Desktop | Responsive landscape home screen, larger-screen scaling, desktop-mode-friendly layout |
 | Runtime Support | Java 8, 17, 21, and 25 support for a wide range of game versions |
 
 ## Project Identity

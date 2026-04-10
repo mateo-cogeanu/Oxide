@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="launcher_landscape_top_bar_height">@dimen/_68sdp</dimen>
+    <dimen name="launcher_landscape_top_bar_button_width">@dimen/_64sdp</dimen>
+    <dimen name="launcher_landscape_top_bar_button_height">@dimen/_50sdp</dimen>
+    <dimen name="launcher_landscape_account_width">@dimen/_320sdp</dimen>
+    <dimen name="launcher_landscape_account_height">@dimen/_48sdp</dimen>
+    <dimen name="launcher_landscape_account_dropdown_offset">@dimen/_48sdp</dimen>
+    <dimen name="launcher_landscape_header_horizontal_padding">@dimen/padding_extra_extra_large</dimen>
+    <dimen name="launcher_landscape_header_vertical_padding">@dimen/padding_large</dimen>
+    <dimen name="launcher_landscape_brand_text_size">@dimen/_16ssp</dimen>
+    <dimen name="launcher_landscape_nav_text_size">@dimen/_22ssp</dimen>
+    <dimen name="launcher_landscape_stage_padding">@dimen/_40sdp</dimen>
+    <dimen name="launcher_landscape_content_max_width">1320dp</dimen>
+    <dimen name="launcher_landscape_summary_gap">@dimen/padding_large</dimen>
+    <dimen name="launcher_landscape_summary_card_height">@dimen/_176sdp</dimen>
+    <dimen name="launcher_landscape_summary_label_text_size">@dimen/_13ssp</dimen>
+    <dimen name="launcher_landscape_summary_profile_text_size">@dimen/_30ssp</dimen>
+    <dimen name="launcher_landscape_summary_version_text_size">@dimen/_25ssp</dimen>
+    <dimen name="launcher_landscape_summary_folder_text_size">@dimen/_18ssp</dimen>
+    <dimen name="launcher_landscape_bottom_bar_horizontal_padding">@dimen/padding_extra_extra_large</dimen>
+    <dimen name="launcher_landscape_bottom_bar_vertical_padding">@dimen/padding_extra_large</dimen>
+    <dimen name="launcher_landscape_version_width">@dimen/_380sdp</dimen>
+    <dimen name="launcher_landscape_version_height">@dimen/_80sdp</dimen>
+    <dimen name="launcher_landscape_edit_button_size">@dimen/_62sdp</dimen>
+    <dimen name="launcher_landscape_play_width">@dimen/_380sdp</dimen>
+    <dimen name="launcher_landscape_play_height">@dimen/_86sdp</dimen>
+</resources>
