@@ -21,6 +21,7 @@ import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.mirrors.DownloadMirror;
 import net.kdt.pojavlaunch.mirrors.MirrorTamperedException;
+import net.kdt.pojavlaunch.modloaders.FabriclikeUtils;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.utils.DownloadUtils;
 import net.kdt.pojavlaunch.utils.FileUtils;
@@ -210,6 +211,58 @@ public class MinecraftDownloader {
         return new File(Tools.DIR_HOME_VERSION, versionId + File.separator + versionId + ".jar");
     }
 
+    private boolean downloadFabriclikeVersionJsonIfNeeded(String versionName, File targetFile) throws IOException {
+        FabriclikeUtils fabriclikeUtils;
+        String prefix;
+        if(versionName.startsWith("fabric-loader-")) {
+            fabriclikeUtils = FabriclikeUtils.FABRIC_UTILS;
+            prefix = "fabric-loader-";
+        } else if(versionName.startsWith("quilt-loader-")) {
+            fabriclikeUtils = FabriclikeUtils.QUILT_UTILS;
+            prefix = "quilt-loader-";
+        } else {
+            return false;
+        }
+
+        String loaderAndGameVersion = versionName.substring(prefix.length());
+        String gameVersion = findKnownGameVersionSuffix(loaderAndGameVersion);
+        String loaderVersion;
+        if(gameVersion != null) {
+            loaderVersion = loaderAndGameVersion.substring(0,
+                    loaderAndGameVersion.length() - gameVersion.length() - 1);
+        } else {
+            int separatorIndex = loaderAndGameVersion.lastIndexOf('-');
+            if(separatorIndex <= 0 || separatorIndex >= loaderAndGameVersion.length() - 1) {
+                return false;
+            }
+            loaderVersion = loaderAndGameVersion.substring(0, separatorIndex);
+            gameVersion = loaderAndGameVersion.substring(separatorIndex + 1);
+        }
+
+        FileUtils.ensureParentDirectory(targetFile);
+        ProgressLayout.setProgress(ProgressLayout.DOWNLOAD_MINECRAFT, 0,
+                R.string.newdl_downloading_metadata, targetFile.getName());
+        String versionJson = DownloadUtils.downloadString(
+                fabriclikeUtils.createJsonDownloadUrl(gameVersion, loaderVersion));
+        Tools.write(targetFile.getAbsolutePath(), versionJson);
+        return true;
+    }
+
+    private String findKnownGameVersionSuffix(String loaderAndGameVersion) {
+        JMinecraftVersionList versionList = AsyncMinecraftDownloader.getVersionList();
+        if(versionList == null || versionList.versions == null) return null;
+
+        String bestMatch = null;
+        for(JMinecraftVersionList.Version version : versionList.versions) {
+            if(version == null || version.id == null) continue;
+            if(!loaderAndGameVersion.endsWith("-" + version.id)) continue;
+            if(bestMatch == null || version.id.length() > bestMatch.length()) {
+                bestMatch = version.id;
+            }
+        }
+        return bestMatch;
+    }
+
     /**
      * Ensure that there is a copy of the client JAR file in the version folder, if a copy is
      * needed.
@@ -295,6 +348,9 @@ public class MinecraftDownloader {
         File versionJsonFile;
         if(verInfo != null) versionJsonFile = downloadGameJson(verInfo);
         else versionJsonFile = createGameJsonPath(versionName);
+        if(!versionJsonFile.canRead()) {
+            downloadFabriclikeVersionJsonIfNeeded(versionName, versionJsonFile);
+        }
         if(versionJsonFile.canRead())  {
             verInfo = Tools.GLOBAL_GSON.fromJson(Tools.read(versionJsonFile), JMinecraftVersionList.Version.class);
         } else {
@@ -365,12 +421,29 @@ public class MinecraftDownloader {
         scheduleDownload(targetPath, DownloadMirror.DOWNLOAD_CLASS_LIBRARIES, downloadUrl, null, 0, true);
     }
 
+    private boolean shouldSkipBundledLwjglLibrary(DependentLibrary dependentLibrary) {
+        if(!dependentLibrary.name.startsWith("org.lwjgl:")) return false;
+
+        String[] nameParts = dependentLibrary.name.split(":");
+        if(nameParts.length != 3) return true;
+
+        switch (nameParts[1]) {
+            case "lwjgl-shaderc":
+            case "lwjgl-spvc":
+            case "lwjgl-vma":
+            case "lwjgl-vulkan":
+                return false;
+            default:
+                return true;
+        }
+    }
+
     private void scheduleLibraryDownloads(DependentLibrary[] dependentLibraries) throws IOException {
         Tools.preProcessLibraries(dependentLibraries);
         growDownloadList(dependentLibraries.length);
         for(DependentLibrary dependentLibrary : dependentLibraries) {
-            // Don't download lwjgl, we have our own bundled in.
-            if(dependentLibrary.name.startsWith("org.lwjgl")) continue;
+            // Don't download bundled LWJGL, but keep Java-only Vulkan bindings needed by newer snapshots.
+            if(shouldSkipBundledLwjglLibrary(dependentLibrary)) continue;
             // Special handling for JNA Android natives
             if(dependentLibrary.name.startsWith("net.java.dev.jna:jna:")) {
                 scheduleNativeLibraryDownload(MAVEN_CENTRAL_REPO1, dependentLibrary);

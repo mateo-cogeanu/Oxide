@@ -36,7 +36,7 @@ public class AsyncMinecraftDownloader {
         void onDownloadFailed(Throwable throwable);
     }
 
-    private static JMinecraftVersionList getVersionList() {
+    static JMinecraftVersionList getVersionList() {
         JMinecraftVersionList versionList = (JMinecraftVersionList) ExtraCore.getValue(ExtraConstants.RELEASE_TABLE);
         if (versionList != null && versionList.versions != null) return versionList;
 

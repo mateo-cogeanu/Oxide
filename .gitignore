@@ -1,0 +1,22 @@
+# Gradle and Android build output
+.gradle/
+build/
+**/build/
+
+# Packaged app artifacts
+*.apk
+*.apks
+*.aab
+*.aar
+**/outputs/apk/
+**/outputs/bundle/
+
+# Local Android SDK and machine-specific config
+local.properties
+
+# IDE/editor local files
+.idea/
+*.iml
+
+# OS metadata
+.DS_Store
